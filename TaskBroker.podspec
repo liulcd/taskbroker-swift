@@ -16,8 +16,8 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "TaskBroker"
-  spec.version      = "0.0.1"
-  spec.summary      = "A short description of TaskBroker."
+  spec.version      = "1.0.0"
+  spec.summary      = "A lightweight, extensible async task broker for Swift."
 
   # This description is used to generate tags and improve search results.
   #   * Think: What does it do? Why did you write it? What is the focus?
@@ -25,9 +25,10 @@ Pod::Spec.new do |spec|
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   spec.description  = <<-DESC
-                   DESC
+TaskBroker-Swift is a lightweight, extensible task broker framework for Swift. It allows you to register, match, and execute tasks asynchronously by path and version, making it easy to decouple task producers and consumers in your application.
+DESC
 
-  spec.homepage     = "http://EXAMPLE/TaskBroker"
+  spec.homepage     = "https://github.com/liulcd/taskbroker-swift"
   # spec.screenshots  = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
 
 
@@ -38,7 +39,7 @@ Pod::Spec.new do |spec|
   #  Popular ones are 'MIT', 'BSD' and 'Apache License, Version 2.0'.
   #
 
-  spec.license      = "MIT (example)"
+  spec.license      = "MIT"
   # spec.license      = { :type => "MIT", :file => "FILE_LICENSE" }
 
 
@@ -80,7 +81,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "http://EXAMPLE/TaskBroker.git", :tag => "#{spec.version}" }
+  spec.source       = { :git => "https://github.com/liulcd/taskbroker-swift.git", :tag => "#{spec.version}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -91,8 +92,10 @@ Pod::Spec.new do |spec|
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.source_files  = "Classes", "Classes/**/*.{h,m}"
-  spec.exclude_files = "Classes/Exclude"
+  spec.source_files  = "Sources/TaskBroker/**/*.swift"
+  spec.swift_version = '5.3'
+  spec.platform     = :ios, "11.0"
+  spec.osx.deployment_target = "10.13"
 
   # spec.public_header_files = "Classes/**/*.h"
 
