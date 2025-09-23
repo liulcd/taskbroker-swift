@@ -25,7 +25,7 @@ Pod::Spec.new do |spec|
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   spec.description  = <<-DESC
-TaskBroker-Swift is a lightweight, extensible task broker framework for Swift. It allows you to register, match, and execute tasks asynchronously by path and version, making it easy to decouple task producers and consumers in your application.
+TaskBroker is a lightweight, extensible task broker framework for Swift. It allows you to register, match, and execute tasks asynchronously by path and version, making it easy to decouple task producers and consumers in your application.
 DESC
 
   spec.homepage     = "https://github.com/liulcd/taskbroker-swift"
