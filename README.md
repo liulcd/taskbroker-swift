@@ -1,6 +1,6 @@
 # TaskBroker
 
-TaskBroker-Swift is a lightweight, extensible task broker framework for Swift. It allows you to register, match, and execute tasks asynchronously by path and version, making it easy to decouple task producers and consumers in your application.
+TaskBroker is a lightweight, extensible task broker framework for Swift. It allows you to register, match, and execute tasks asynchronously by path and version, making it easy to decouple task producers and consumers in your application.
 
 ## Features
 - Register custom task brokers with unique paths and versions
@@ -60,4 +60,4 @@ if let (output, error) = result {
 
 ## License
 
-MIT
+See [LICENSE](LICENSE) for details.
