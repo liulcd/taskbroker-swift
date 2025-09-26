@@ -1,0 +1,15 @@
+{
+  "originHash" : "4b8b12a5c96c22d59253f61a2335d16d64bece89a3198e54eff0a86d32b9a72c",
+  "pins" : [
+    {
+      "identity" : "sendablevalue",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/liulcd/sendablevalue.git",
+      "state" : {
+        "revision" : "a90dd9799cc6a8ef72fa73511a05e0fb8dbeeb22",
+        "version" : "1.1.0"
+      }
+    }
+  ],
+  "version" : 3
+}

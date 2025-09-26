@@ -11,14 +11,7 @@
 // License: MIT
 
 import Foundation
-
-internal class SendableValue: NSObject, @unchecked Sendable {
-    let value: Any?
-    
-    init(value: Any?) {
-        self.value = value
-    }
-}
+import SendableValue
 
 /// Protocol for a task broker. Implement this to register your own task handlers.
 public protocol TaskBrokerType: NSObjectProtocol, Sendable {
@@ -64,15 +57,15 @@ private actor TaskBrokerActor {
         }
     }
     /// Find a broker that matches the request by path and version.
-    func match(_ request: TaskBroker.SendableRequest) -> TaskBrokerType? {
+    func match(_ path: AnyHashable, parameters: Any?, version: UInt) -> TaskBrokerType? {
         var matchPaths: [TaskBrokerType] = []
         var matchVersions: [TaskBrokerType] = []
         brokers.forEach { element in
-            if element.paths.contains(where: { path in
-                path == request.path
+            if element.paths.contains(where: { pathElement in
+                pathElement == path
             }) {
                 matchPaths.append(element)
-                if element.version == request.version {
+                if element.version == version {
                     matchVersions.append(element)
                 }
             }
@@ -80,7 +73,7 @@ private actor TaskBrokerActor {
         var broker: TaskBrokerType?
         while matchVersions.count > 0 {
             let lastBroker = matchVersions.removeLast()
-            if lastBroker.match(request.path, parameters: request.parameters, version: request.version) {
+            if lastBroker.match(path, parameters: parameters, version: version) {
                 broker = lastBroker
                 break
             }
@@ -91,7 +84,7 @@ private actor TaskBrokerActor {
         if broker == nil {
             while matchPaths.count > 0 {
                 let lastBroker = matchPaths.removeLast()
-                if lastBroker.match(request.path, parameters: request.parameters, version: request.version) {
+                if lastBroker.match(path, parameters: parameters, version: version) {
                     broker = lastBroker
                     break
                 }
@@ -119,13 +112,13 @@ public class TaskBroker: NSObject, @unchecked Sendable {
     
     /// Remove a broker by its id.
     public func remove(_ id: AnyHashable) async {
-        let hash = SendableHash(value: id)
+        let hash = SendableAnyHashableValue(id)
         await actor.remove(hash.value)
     }
     
     /// Remove a broker by its id.
     public func remove(_ id: AnyHashable) {
-        let hash = SendableHash(value: id)
+        let hash = SendableAnyHashableValue(id)
         Task {
             await actor.remove(hash.value)
         }
@@ -133,8 +126,9 @@ public class TaskBroker: NSObject, @unchecked Sendable {
     
     /// Publish a task to the broker system. Returns the result and error if any.
     public func publish(_ path: AnyHashable, parameters: Any?, version: UInt = 0) async -> (result: Any?, error: NSError?)? {
-        let request = SendableRequest(path: path, parameters: parameters, version: version)
-        guard let broker = await actor.match(request) else {
+        let path = SendableAnyHashableValue(path)
+        let parameters = SendableValue(parameters)
+        guard let broker = await actor.match(path.value, parameters: parameters.value, version: version) else {
             return nil
         }
         return await broker.run(path, parameters: parameters)
@@ -142,38 +136,17 @@ public class TaskBroker: NSObject, @unchecked Sendable {
     
     /// Publish a task to the broker system. Returns the result and error if any.
     public func publish(_ path: AnyHashable, parameters: Any?, version: UInt = 0, result: ((_ result: Any?, _ error: NSError?) -> Void)? = nil) {
-        let path = SendableHash(value: path)
-        let parameters = SendableValue(value: parameters)
-        let result = SendableValue(value: result)
+        let path = SendableAnyHashableValue(path)
+        let parameters = SendableValue(parameters)
+        let result = SendableValue(result)
         Task {
-            let result = result.value as? (_ result: Any?, _ error: NSError?) -> Void
-            let request = SendableRequest(path: path.value, parameters: parameters.value, version: version)
-            guard let broker = await actor.match(request) else {
+            let result = result.resultHandlerValue
+            guard let broker = await actor.match(path.value, parameters: parameters.value, version: version) else {
                 result?(nil, nil)
                 return
             }
             let runResult =  await broker.run(path, parameters: parameters)
             result?(runResult.result, runResult.error)
-        }
-    }
-    
-    /// Internal request wrapper for sendable task requests.
-    internal class SendableRequest: NSObject, @unchecked Sendable {
-        let path: AnyHashable
-        let parameters: Any?
-        let version: UInt
-        init(path: AnyHashable, parameters: Any?, version: UInt) {
-            self.path = path
-            self.parameters = parameters
-            self.version = version
-        }
-    }
-    
-    /// Internal wrapper for sendable hashable values.
-    private class SendableHash: NSObject, @unchecked Sendable {
-        let value: AnyHashable
-        init(value: AnyHashable) {
-            self.value = value
         }
     }
 }
