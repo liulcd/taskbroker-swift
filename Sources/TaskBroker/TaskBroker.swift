@@ -112,15 +112,15 @@ public class TaskBroker: NSObject, @unchecked Sendable {
     
     /// Remove a broker by its id.
     public func remove(_ id: AnyHashable) async {
-        let hash = SendableAnyHashableValue(id)
-        await actor.remove(hash.value)
+        let id = SendableAnyHashableValue(id)
+        await actor.remove(id.value)
     }
     
     /// Remove a broker by its id.
     public func remove(_ id: AnyHashable) {
-        let hash = SendableAnyHashableValue(id)
+        let id = SendableAnyHashableValue(id)
         Task {
-            await actor.remove(hash.value)
+            await actor.remove(id.value)
         }
     }
     
