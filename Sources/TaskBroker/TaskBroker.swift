@@ -125,7 +125,7 @@ public class TaskBroker: NSObject, @unchecked Sendable {
     }
     
     /// Publish a task to the broker system. Returns the result and error if any.
-    public func publish(_ path: AnyHashable, parameters: Any?, version: UInt = 0) async -> (result: Any?, error: NSError?)? {
+    public func publish(_ path: AnyHashable, parameters: Any? = nil, version: UInt = 0) async -> (result: Any?, error: NSError?)? {
         let path = SendableAnyHashableValue(path)
         let parameters = SendableValue(parameters)
         guard let broker = await actor.match(path.value, parameters: parameters.value, version: version) else {
@@ -135,7 +135,7 @@ public class TaskBroker: NSObject, @unchecked Sendable {
     }
     
     /// Publish a task to the broker system. Returns the result and error if any.
-    public func publish(_ path: AnyHashable, parameters: Any?, version: UInt = 0, result: ((_ result: Any?, _ error: NSError?) -> Void)? = nil) {
+    public func publish(_ path: AnyHashable, parameters: Any? = nil, version: UInt = 0, result: ((_ result: Any?, _ error: NSError?) -> Void)? = nil) {
         let path = SendableAnyHashableValue(path)
         let parameters = SendableValue(parameters)
         let result = SendableValue(result)
